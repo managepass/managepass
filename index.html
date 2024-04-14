@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Password Checker</title>
     <style>
-        /* CSS for the toggle switch */
+        /* CSS code for the switch */
         .switch {
             position: fixed;
             top: 20px;
@@ -29,7 +29,7 @@
             left: 0;
             right: 0;
             bottom: 0;
-            background-color: #28096b; /* Dark blue background */
+            background-color: #28096b; /* Dark blue */
             transition: .4s;
             border-radius: 30px;
         }
@@ -60,7 +60,7 @@
             color: #fff;
         }
 
-        /* Form styling */
+        /* CSS code for the form */
         form {
             margin: 50px auto 0;
             width: 300px;
@@ -97,7 +97,6 @@
             background-color: #0056b3;
         }
 
-        /* Message styling */
         #result {
             margin-top: 10px;
             text-align: center;
@@ -132,25 +131,24 @@
     </form>
 
     <script>
+        // Simulated list of compromised passwords as if read from passwords.txt
+        const compromisedPasswords = ["Example123!", "Password2023!", "123456789"];
+
         document.getElementById("passwordForm").addEventListener("submit", function(event) {
             event.preventDefault(); // Prevent the default form submission
             const password = document.getElementById("password").value;
             const resultElement = document.getElementById("result");
-            
-            // Simulate a fetch request (for demonstration)
-            setTimeout(() => {
-                // Example response simulation
-                const data = { message: 'Your password is strong enough.' }; // You can change this for different responses
-                resultElement.textContent = data.message;
-                resultElement.className = 'green'; // Set default to green for success
+            resultElement.textContent = ""; // Clear previous results
+            resultElement.className = ""; // Reset classes
 
-                // Update based on actual message content for demonstration
-                if (data.message.includes("not strong enough")) {
-                    resultElement.className = 'red';
-                } else if (data.message.includes("compromised")) {
-                    resultElement.className = 'purple';
-                }
-            }, 500);
+            // Check if the password is in the compromised list
+            if (compromisedPasswords.includes(password)) {
+                resultElement.textContent = "Your password has been compromised! Please choose a different one.";
+                resultElement.className = "purple";
+            } else {
+                resultElement.textContent = "Your password is strong enough.";
+                resultElement.className = "green";
+            }
         });
 
         // Dark mode toggle functionality
@@ -159,4 +157,11 @@
             document.body.classList.toggle("dark-mode", this.checked);
         });
 
-        // Automatically enable
+        // Automatically enable dark mode if preferred by the user's system settings
+        if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+            darkModeToggle.checked = true;
+            document.body.classList.add("dark-mode");
+        }
+    </script>
+</body>
+</html>
