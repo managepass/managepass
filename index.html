@@ -5,147 +5,73 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Password Checker</title>
     <style>
-        .switch {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            font-size: 17px;
-            display: inline-block;
-            width: 3.5em;
-            height: 2em;
-        }
-        .switch input {
-            opacity: 0;
-            width: 0;
-            height: 0;
-        }
-        .slider {
-            position: absolute;
-            cursor: pointer;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background-color: #28096b;
-            transition: .4s;
-            border-radius: 30px;
-        }
-        .slider:before {
-            position: absolute;
-            content: "";
-            height: 1.4em;
-            width: 1.4em;
-            left: 4px;
-            bottom: 4px;
-            background-color: white;
-            transition: .4s;
-            border-radius: 50%;
-        }
-        input:checked + .slider {
-            background-color: #522ba7;
-        }
-        input:checked + .slider:before {
-            transform: translateX(1.5em);
-        }
-        body.dark-mode {
-            background-color: #222;
-            color: #fff;
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
         }
         form {
-            margin: 50px auto 0;
-            width: 300px;
-            padding: 20px;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-            background-color: #fff;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
             display: flex;
             flex-direction: column;
-            align-items: center;
+            width: 300px;
+            padding: 20px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
         }
-        input[type="password"], input[type="submit"], input[type="file"] {
-            width: 100%;
+        input[type="password"], input[type="button"] {
             padding: 10px;
             margin-top: 10px;
+            font-size: 16px;
         }
-        input[type="submit"] {
-            border: none;
-            border-radius: 3px;
+        input[type="button"] {
+            cursor: pointer;
             background-color: #007bff;
             color: white;
-            cursor: pointer;
+            border: none;
         }
-        input[type="submit"]:hover {
+        input[type="button"]:hover {
             background-color: #0056b3;
         }
         #result {
             margin-top: 10px;
             text-align: center;
-            font-weight: bold;
-        }
-        #result.red {
-            color: red;
-        }
-        #result.green {
-            color: green;
-        }
-        #result.purple {
-            color: purple;
         }
     </style>
 </head>
 <body>
-    <label class="switch">
-        <input type="checkbox" id="darkModeToggle">
-        <span class="slider"></span>
-    </label>
-
-    <form id="passwordForm">
+    <form>
         <h1>Password Checker</h1>
-        <input type="file" id="passwordFile" accept=".txt">
-        <label for="password">Enter your password:</label>
-        <input type="password" id="password" name="password">
-        <input type="submit" value="Check Password">
+        <input type="password" id="passwordInput" placeholder="Enter your password">
+        <input type="button" value="Check Password" onclick="checkPassword()">
         <div id="result"></div>
     </form>
 
     <script>
-        const resultElement = document.getElementById("result");
         let compromisedPasswords = [];
 
-        document.getElementById("passwordFile").addEventListener('change', function(event) {
-            const file = event.target.files[0];
-            if (file) {
-                const reader = new FileReader();
-                reader.onload = function(evt) {
-                    compromisedPasswords = evt.target.result.split("\n").map(p => p.trim());
-                };
-                reader.readAsText(file);
-            }
-        });
+        // Fetch the password list when the page loads
+        window.onload = function() {
+            fetch('/passwords.txt')
+                .then(response => response.text())
+                .then(data => {
+                    compromisedPasswords = data.split('\n').map(p => p.trim());
+                })
+                .catch(error => console.error('Error loading the passwords:', error));
+        };
 
-        document.getElementById("passwordForm").addEventListener("submit", function(event) {
-            event.preventDefault(); // Prevent the default form submission
-            const password = document.getElementById("password").value;
-
-            if (!compromisedPasswords.length) {
-                alert("Please load the passwords file first.");
-                return;
-            }
-
+        function checkPassword() {
+            const password = document.getElementById('passwordInput').value;
+            const result = document.getElementById('result');
             if (compromisedPasswords.includes(password)) {
-                resultElement.textContent = "Your password has been compromised! Please choose a different one.";
-                resultElement.className = "purple";
+                result.textContent = 'Your password has been compromised! Please choose a different one.';
+                result.style.color = 'red';
             } else {
-                resultElement.textContent = "Your password is strong enough.";
-                resultElement.className = "green";
+                result.textContent = 'Your password is strong enough.';
+                result.style.color = 'green';
             }
-        });
-
-        const darkModeToggle = document.getElementById("darkModeToggle");
-        darkModeToggle.addEventListener("change", function() {
-            document.body.classList.toggle("dark-mode", this.checked);
-        });
+        }
     </script>
 </body>
 </html>
