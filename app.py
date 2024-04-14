@@ -1,4 +1,3 @@
-import os
 import re
 from flask import Flask, request, jsonify, render_template
 
@@ -50,22 +49,17 @@ def suggest_passwords(password):
 # Main route for password strength checker
 @app.route('/check_password', methods=['POST'])
 def check_password():
-    data = request.form
-    password = data.get('password')
+    password = request.form.get('password')
     
-    # Get path to the Downloads directory
-    downloads_path = os.path.join(os.path.expanduser("~"), "Downloads")
-    
-    # Construct the full path to the passwords file
-    passwords_file = os.path.join(downloads_path, "passwords.txt")
-
-    # Check if the passwords file exists
-    if not os.path.exists(passwords_file):
-        return jsonify({'message': 'Passwords file not found in the Downloads directory.'}), 404
+    # Path to the passwords file (assumed to be in the same directory as this script)
+    passwords_file = "passwords.txt"
 
     # Load password list from file
-    with open(passwords_file, "r") as file:
-        password_list = file.read().splitlines()
+    try:
+        with open(passwords_file, "r") as file:
+            password_list = file.read().splitlines()
+    except FileNotFoundError:
+        return jsonify({'message': 'Passwords file not found.'}), 404
 
     # Check if password is used
     if is_password_used(password, password_list):
