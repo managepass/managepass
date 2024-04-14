@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Password Checker</title>
     <style>
-        /* CSS code for the switch */
         .switch {
             position: fixed;
             top: 20px;
@@ -15,13 +14,11 @@
             width: 3.5em;
             height: 2em;
         }
-
         .switch input {
             opacity: 0;
             width: 0;
             height: 0;
         }
-
         .slider {
             position: absolute;
             cursor: pointer;
@@ -29,11 +26,10 @@
             left: 0;
             right: 0;
             bottom: 0;
-            background-color: #28096b; /* Dark blue */
+            background-color: #28096b;
             transition: .4s;
             border-radius: 30px;
         }
-
         .slider:before {
             position: absolute;
             content: "";
@@ -45,22 +41,16 @@
             transition: .4s;
             border-radius: 50%;
         }
-
         input:checked + .slider {
-            background-color: #522ba7; /* Lighter purple */
+            background-color: #522ba7;
         }
-
         input:checked + .slider:before {
             transform: translateX(1.5em);
         }
-
-        /* Dark mode styles */
         body.dark-mode {
             background-color: #222;
             color: #fff;
         }
-
-        /* CSS code for the form */
         form {
             margin: 50px auto 0;
             width: 300px;
@@ -73,18 +63,11 @@
             flex-direction: column;
             align-items: center;
         }
-
-        input[type="password"], input[type="submit"] {
+        input[type="password"], input[type="submit"], input[type="file"] {
             width: 100%;
             padding: 10px;
             margin-top: 10px;
         }
-
-        input[type="password"] {
-            border: 1px solid #ccc;
-            border-radius: 3px;
-        }
-
         input[type="submit"] {
             border: none;
             border-radius: 3px;
@@ -92,25 +75,20 @@
             color: white;
             cursor: pointer;
         }
-
         input[type="submit"]:hover {
             background-color: #0056b3;
         }
-
         #result {
             margin-top: 10px;
             text-align: center;
             font-weight: bold;
         }
-
         #result.red {
             color: red;
         }
-
         #result.green {
             color: green;
         }
-
         #result.purple {
             color: purple;
         }
@@ -124,6 +102,7 @@
 
     <form id="passwordForm">
         <h1>Password Checker</h1>
+        <input type="file" id="passwordFile" accept=".txt">
         <label for="password">Enter your password:</label>
         <input type="password" id="password" name="password">
         <input type="submit" value="Check Password">
@@ -131,17 +110,29 @@
     </form>
 
     <script>
-        // Simulated list of compromised passwords as if read from passwords.txt
-        const compromisedPasswords = ["Example123!", "Password2023!", "123456789"];
+        const resultElement = document.getElementById("result");
+        let compromisedPasswords = [];
+
+        document.getElementById("passwordFile").addEventListener('change', function(event) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(evt) {
+                    compromisedPasswords = evt.target.result.split("\n").map(p => p.trim());
+                };
+                reader.readAsText(file);
+            }
+        });
 
         document.getElementById("passwordForm").addEventListener("submit", function(event) {
             event.preventDefault(); // Prevent the default form submission
             const password = document.getElementById("password").value;
-            const resultElement = document.getElementById("result");
-            resultElement.textContent = ""; // Clear previous results
-            resultElement.className = ""; // Reset classes
 
-            // Check if the password is in the compromised list
+            if (!compromisedPasswords.length) {
+                alert("Please load the passwords file first.");
+                return;
+            }
+
             if (compromisedPasswords.includes(password)) {
                 resultElement.textContent = "Your password has been compromised! Please choose a different one.";
                 resultElement.className = "purple";
@@ -151,17 +142,10 @@
             }
         });
 
-        // Dark mode toggle functionality
         const darkModeToggle = document.getElementById("darkModeToggle");
         darkModeToggle.addEventListener("change", function() {
             document.body.classList.toggle("dark-mode", this.checked);
         });
-
-        // Automatically enable dark mode if preferred by the user's system settings
-        if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
-            darkModeToggle.checked = true;
-            document.body.classList.add("dark-mode");
-        }
     </script>
 </body>
 </html>
