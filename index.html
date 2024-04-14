@@ -5,12 +5,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Password Checker</title>
     <style>
-        /* CSS code for the switch */
+        /* CSS for the toggle switch */
         .switch {
-            font-size: 17px;
             position: fixed;
             top: 20px;
             right: 20px;
+            font-size: 17px;
             display: inline-block;
             width: 3.5em;
             height: 2em;
@@ -23,15 +23,14 @@
         }
 
         .slider {
-            --background: #28096b;
             position: absolute;
             cursor: pointer;
             top: 0;
             left: 0;
             right: 0;
             bottom: 0;
-            background-color: var(--background);
-            transition: .5s;
+            background-color: #28096b; /* Dark blue background */
+            transition: .4s;
             border-radius: 30px;
         }
 
@@ -40,21 +39,19 @@
             content: "";
             height: 1.4em;
             width: 1.4em;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            transition: .4s;
             border-radius: 50%;
-            left: 10%;
-            bottom: 15%;
-            box-shadow: inset 8px -4px 0px 0px #fff000;
-            background: var(--background);
-            transition: .5s;
         }
 
         input:checked + .slider {
-            background-color: #522ba7;
+            background-color: #522ba7; /* Lighter purple */
         }
 
         input:checked + .slider:before {
-            transform: translateX(100%);
-            box-shadow: inset 15px -4px 0px 15px #fff000;
+            transform: translateX(1.5em);
         }
 
         /* Dark mode styles */
@@ -63,51 +60,50 @@
             color: #fff;
         }
 
-        /* CSS code for the form */
+        /* Form styling */
         form {
+            margin: 50px auto 0;
             width: 300px;
             padding: 20px;
             border: 1px solid #ccc;
             border-radius: 5px;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
             background-color: #fff;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
             display: flex;
             flex-direction: column;
             align-items: center;
-            margin: auto; /* Center the form horizontally */
-            margin-top: 400px; /* Adjusted margin for the form */
+        }
+
+        input[type="password"], input[type="submit"] {
+            width: 100%;
+            padding: 10px;
+            margin-top: 10px;
         }
 
         input[type="password"] {
-            width: calc(100% - 40px);
-            margin-bottom: 10px;
-            padding: 10px;
             border: 1px solid #ccc;
             border-radius: 3px;
         }
 
         input[type="submit"] {
-            width: 100%;
-            padding: 10px;
             border: none;
             border-radius: 3px;
             background-color: #007bff;
-            color: #fff;
+            color: white;
             cursor: pointer;
-            transition: background-color 0.3s;
         }
 
         input[type="submit"]:hover {
             background-color: #0056b3;
         }
 
+        /* Message styling */
         #result {
             margin-top: 10px;
             text-align: center;
             font-weight: bold;
         }
 
-        /* Styling for messages */
         #result.red {
             color: red;
         }
@@ -119,11 +115,6 @@
         #result.purple {
             color: purple;
         }
-
-        /* Styling for the form title and label */
-        h1, label {
-            color: black; /* Set text color to black */
-        }
     </style>
 </head>
 <body>
@@ -132,10 +123,10 @@
         <span class="slider"></span>
     </label>
 
-    <form id="passwordForm" method="post" action="/check_password">
+    <form id="passwordForm">
         <h1>Password Checker</h1>
-        <label for="password">Enter your password:</label><br>
-        <input type="password" id="password" name="password"><br>
+        <label for="password">Enter your password:</label>
+        <input type="password" id="password" name="password">
         <input type="submit" value="Check Password">
         <div id="result"></div>
     </form>
@@ -143,49 +134,29 @@
     <script>
         document.getElementById("passwordForm").addEventListener("submit", function(event) {
             event.preventDefault(); // Prevent the default form submission
+            const password = document.getElementById("password").value;
+            const resultElement = document.getElementById("result");
             
-            // Get the password from the form
-            var password = document.getElementById("password").value;
+            // Simulate a fetch request (for demonstration)
+            setTimeout(() => {
+                // Example response simulation
+                const data = { message: 'Your password is strong enough.' }; // You can change this for different responses
+                resultElement.textContent = data.message;
+                resultElement.className = 'green'; // Set default to green for success
 
-            // Create a new FormData object
-            var formData = new FormData();
-            formData.append("password", password);
-
-            // Make a POST request to the Flask endpoint
-            fetch("/check_password", {
-                method: "POST",
-                body: formData
-            })
-            .then(response => response.json())
-            .then(data => {
-                // Display the result
-                var resultElement = document.getElementById("result");
-                resultElement.innerHTML = data.message;
-                resultElement.classList.remove("red", "green", "purple"); // Remove previous class
+                // Update based on actual message content for demonstration
                 if (data.message.includes("not strong enough")) {
-                    resultElement.classList.add("red");
+                    resultElement.className = 'red';
                 } else if (data.message.includes("compromised")) {
-                    resultElement.classList.add("purple");
-                } else {
-                    resultElement.classList.add("green");
+                    resultElement.className = 'purple';
                 }
-            })
-            .catch(error => {
-                console.error("Error:", error);
-            });
+            }, 500);
         });
 
         // Dark mode toggle functionality
-        var darkModeToggle = document.getElementById("darkModeToggle");
+        const darkModeToggle = document.getElementById("darkModeToggle");
         darkModeToggle.addEventListener("change", function() {
-            document.body.classList.toggle("dark-mode", darkModeToggle.checked);
+            document.body.classList.toggle("dark-mode", this.checked);
         });
 
-        // Check if dark mode is already enabled
-        if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
-            darkModeToggle.checked = true;
-            document.body.classList.add("dark-mode");
-        }
-    </script>
-</body>
-</html>
+        // Automatically enable
