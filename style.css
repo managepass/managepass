@@ -14,15 +14,6 @@ body {
   background: #222;
 }
 
-#crackedStatus {
-  color: #f00;
-  font-size: 16px;
-  padding: 10px;
-  text-align: center;
-  margin-top: 20px;
-  visibility: hidden; /* Initially hidden, shown only when needed */
-}
-
 .container {
   position: relative;
   width: 400px;
