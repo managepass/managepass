@@ -23,14 +23,6 @@ body {
   visibility: hidden; /* Initially hidden, shown only when needed */
 }
 
-/* Additional styles to ensure visibility and attention */
-.container.weak #crackedStatus {
-  visibility: visible;
-  background-color: rgba(255, 0, 0, 0.1);
-  border: 1px solid #f00;
-  border-radius: 8px;
-}
-
 .container {
   position: relative;
   width: 400px;
