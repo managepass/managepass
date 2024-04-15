@@ -14,14 +14,6 @@ body {
   background: #222;
 }
 
-#status {
-  color: #f00;
-  font-size: 16px;
-  padding: 10px;
-  text-align: center;
-}
-
-
 .container {
   position: relative;
   width: 400px;
