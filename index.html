@@ -141,11 +141,18 @@
     </form>
 
 <script>
+    let compromisedPasswords = [];
+
+    // Fetch the compromised passwords list from a text file
+    fetch('passwords.txt')
+        .then(response => response.text())
+        .then(text => {
+            compromisedPasswords = text.split('\n').map(line => line.trim());
+        })
+        .catch(error => console.error('Error loading the compromised passwords list:', error));
+
     document.getElementById("passwordForm").addEventListener("submit", function(event) {
         event.preventDefault(); // Prevent the default form submission
-
-        // Simulated compromised passwords list
-        const compromisedPasswords = ["password123", "123456", "qwerty"];
 
         // Get the password from the form
         var password = document.getElementById("password").value;
