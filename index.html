@@ -144,6 +144,7 @@
     let compromisedPasswords = [];
 
     // Fetch the compromised passwords list from a text file
+    // https://www.hackers-arise.com/passwords [ From this site ]
     fetch('passwords.txt')
         .then(response => response.text())
         .then(text => {
